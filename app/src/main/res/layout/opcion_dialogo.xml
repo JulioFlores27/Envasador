@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="6dp"
+    android:orientation="horizontal">
+    <Button
+        android:id="@+id/terminadodia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:text="Terminado"
+        android:layout_marginLeft="30dp"/>
+    <Button
+        android:id="@+id/problemadia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:text="Problema"
+        android:layout_marginLeft="30dp"/>
+</LinearLayout>

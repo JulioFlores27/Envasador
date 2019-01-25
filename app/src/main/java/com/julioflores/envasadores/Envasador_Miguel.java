@@ -16,12 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -72,6 +69,7 @@ public class Envasador_Miguel extends Fragment {
         listanombres = (SwipeMenuListView) v.findViewById(R.id.listan);
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefreshlayout);
         cliente = new AsyncHttpClient();
+        customHandler.postDelayed(actualizartimer, 45000);
         ObtenerEnvases3();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -137,42 +135,21 @@ public class Envasador_Miguel extends Fragment {
             listanombres.setAdapter(adaptadores);
             listanombres.setOnItemClickListener(new AdapterView.OnItemClickListener(){
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                    customHandler.removeCallbacks(actualizartimer);
-                    customHandler.postDelayed(actualizartimer, 60000);
-                }
-            });
-            SwipeMenuCreator creator = new SwipeMenuCreator() {
-                @Override
-                public void create(SwipeMenu menu) {
-                    SwipeMenuItem openItem = new SwipeMenuItem(getActivity().getApplicationContext());
-                    openItem.setBackground(new ColorDrawable(Color.rgb(50,205,50)));
-                    openItem.setWidth(200);
-                    openItem.setTitle("Terminado");
-                    openItem.setTitleSize(18);
-                    openItem.setTitleColor(Color.WHITE);
-                    menu.addMenuItem(openItem);
-                    SwipeMenuItem openItem2 = new SwipeMenuItem(getActivity().getApplicationContext());
-                    openItem2.setBackground(new ColorDrawable(Color.rgb(178,34,34)));
-                    openItem2.setWidth(170);
-                    openItem2.setTitle("Problema");
-                    openItem2.setTitleSize(18);
-                    openItem2.setTitleColor(Color.WHITE);
-                    menu.addMenuItem(openItem2);
-                }
-            };
-            listanombres.setMenuCreator(creator);
-            listanombres.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                     Date fechahora = calendariocompleto.getInstance().getTime();
                     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
                     final String dias = dateFormat.format(fechahora);
                     final Envases esteenvase = (Envases) listanombres.getItemAtPosition(position);
-                    final String ids = String.valueOf(esteenvase.getIds());
-                    ConnectivityManager conectividad = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo lanet = conectividad.getActiveNetworkInfo();
-                    switch (index) {
-                        case 0:
+                    final AlertDialog.Builder mibuild1 = new AlertDialog.Builder(getActivity());
+                    final View mviewd = getLayoutInflater().inflate(R.layout.opcion_dialogo, null);
+                    final Button botonter = (Button) mviewd.findViewById(R.id.terminadodia);
+                    Button botonpro = (Button) mviewd.findViewById(R.id.problemadia);
+                    mibuild1.setTitle("Seleccione Opción:");
+                    botonter.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final String ids = String.valueOf(esteenvase.getIds());
+                            ConnectivityManager conectividad = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                            NetworkInfo lanet = conectividad.getActiveNetworkInfo();
                             if(lanet != null && lanet.isConnected()){
                                 String cant = String.valueOf(esteenvase.getCantidades());
                                 String cant2 = String.valueOf(esteenvase.getCantidades2());
@@ -187,14 +164,13 @@ public class Envasador_Miguel extends Fragment {
                                 int c33 = Integer.parseInt(cant3);
                                 int l33 = Integer.parseInt(lots3);
                                 if(c11 == 0 || l11 == 0) {
-                                    AlertDialog.Builder mibuild1 = new AlertDialog.Builder(getActivity());
                                     View mview1 = getLayoutInflater().inflate(R.layout.terminado_dialogo, null);
                                     mibuild1.setTitle("Terminado");
                                     final EditText t1 = (EditText) mview1.findViewById(R.id.cantis);
                                     t1.setText(cant);
                                     final EditText t2 = (EditText) mview1.findViewById(R.id.lotes);
                                     t2.setText(lots);
-                                    final AlertDialog.Builder builder1 = mibuild1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                                    mibuild1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             ConnectivityManager conectividad1 = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -221,7 +197,7 @@ public class Envasador_Miguel extends Fragment {
                                                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
                                                     });
                                                 }else{
-                                                    Toast.makeText(getActivity(), "Ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), "No se guardo, ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
                                                 }
                                             }else{
                                                 Toast.makeText(getActivity(), "No hay Internet, intentarlo más tarde o verifica su conexión",Toast.LENGTH_SHORT).show();
@@ -246,14 +222,13 @@ public class Envasador_Miguel extends Fragment {
                                     AlertDialog dialog = mibuild1.create();
                                     dialog.show();
                                 } else if (c22 == 0 || l22 == 0){
-                                    AlertDialog.Builder mibuild1 = new AlertDialog.Builder(getActivity());
                                     View mview1 = getLayoutInflater().inflate(R.layout.terminado_dialogo, null);
                                     mibuild1.setTitle("Terminado");
                                     final EditText t1 = (EditText) mview1.findViewById(R.id.cantis);
                                     t1.setText(cant);
                                     final EditText t2 = (EditText) mview1.findViewById(R.id.lotes);
                                     t2.setText(lots);
-                                    final AlertDialog.Builder builder1 = mibuild1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                                    mibuild1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             ConnectivityManager conectividad1 = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -281,7 +256,7 @@ public class Envasador_Miguel extends Fragment {
                                                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
                                                     });
                                                 }else{
-                                                    Toast.makeText(getActivity(), "Ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), "No se guardo, ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
                                                 }
                                             }else{
                                                 Toast.makeText(getActivity(), "No hay Internet, intentarlo más tarde o verifica su conexión",Toast.LENGTH_SHORT).show();
@@ -299,14 +274,13 @@ public class Envasador_Miguel extends Fragment {
                                     AlertDialog dialog = mibuild1.create();
                                     dialog.show();
                                 }else if (c33 == 0 || l33 == 0){
-                                    AlertDialog.Builder mibuild1 = new AlertDialog.Builder(getActivity());
                                     View mview1 = getLayoutInflater().inflate(R.layout.terminado_dialogo, null);
                                     mibuild1.setTitle("Terminado");
                                     final EditText t1 = (EditText) mview1.findViewById(R.id.cantis);
                                     t1.setText(cant2);
                                     final EditText t2 = (EditText) mview1.findViewById(R.id.lotes);
                                     t2.setText(lots2);
-                                    final AlertDialog.Builder builder1 = mibuild1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                                    mibuild1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             ConnectivityManager conectividad1 = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -332,7 +306,7 @@ public class Envasador_Miguel extends Fragment {
                                                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
                                                     });
                                                 }else{
-                                                    Toast.makeText(getActivity(), "Ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), "No se guardo, ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
                                                 }
                                             }else{
                                                 Toast.makeText(getActivity(), "No hay Internet, intentarlo más tarde o verifica su conexión",Toast.LENGTH_SHORT).show();
@@ -363,8 +337,14 @@ public class Envasador_Miguel extends Fragment {
                                 Toast.makeText(getActivity(), "No hay Internet, intentarlo más tarde o verifica su conexión",Toast.LENGTH_SHORT).show();
                                 listanombres.setVisibility(View.INVISIBLE);
                             }
-                            break;
-                        case 1:
+                        }
+                    });
+                    botonpro.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final String ids = String.valueOf(esteenvase.getIds());
+                            ConnectivityManager conectividad = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                            NetworkInfo lanet = conectividad.getActiveNetworkInfo();
                             if(lanet != null && lanet.isConnected()){
                                 final String cant1 = String.valueOf(esteenvase.getCantidades());
                                 final String cant21 = String.valueOf(esteenvase.getCantidades2());
@@ -387,19 +367,24 @@ public class Envasador_Miguel extends Fragment {
                                             Date fechahora = Calendar.getInstance().getTime();
                                             String pr1 = p1.getText().toString();
                                             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-                                            String url2 = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
-                                                    "&Etapa1=Terminado&Cantidad="+ cant1 + "&DetalleProblema=" + pr1.replaceAll(" ","%20") +
-                                                    "&Lote=" + lots1 + "&Cantidad2="+ cant21 + "&Lote2="+ lots21 + "&Cantidad3="+ cant31 +"&Lote3="+ lots31 +
-                                                    "&ID=" + ids;
-                                            Toast.makeText(getActivity(), "Problema Enviada", Toast.LENGTH_SHORT).show();
-                                            cliente.post(url2, new AsyncHttpResponseHandler() {
-                                                @Override
-                                                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
-                                                @Override
-                                                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
-                                            });
+                                            if(pr1.isEmpty()){
+                                                Toast.makeText(getActivity(), "No se guardo, favor de escribir sus problema", Toast.LENGTH_SHORT).show();
+                                            }else {
+                                                String url2 = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
+                                                        "&Etapa1=Terminado&Cantidad="+ cant1 + "&DetalleProblema=" + pr1.replaceAll(" ","%20") +
+                                                        "&Lote=" + lots1 + "&Cantidad2="+ cant21 + "&Lote2="+ lots21 + "&Cantidad3="+ cant31 +"&Lote3="+ lots31 +
+                                                        "&ID=" + ids;
+                                                Toast.makeText(getActivity(), "Problema Enviada", Toast.LENGTH_SHORT).show();
+                                                cliente.post(url2, new AsyncHttpResponseHandler() {
+                                                    @Override
+                                                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                                    @Override
+                                                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                                });
+                                            }
                                         }else {
-                                            Toast.makeText(getActivity(), "Ha llego al limite de Intentos de Cantidad/Lote", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "No hay Internet, intentarlo más tarde o verifica su conexión",Toast.LENGTH_SHORT).show();
+                                            listanombres.setVisibility(View.INVISIBLE);
                                         }
                                     }
                                 });
@@ -411,7 +396,8 @@ public class Envasador_Miguel extends Fragment {
                                         if(lanet1 != null && lanet1.isConnected()) {
                                             dialog.cancel();
                                         } else {
-                                            Toast.makeText(getActivity(), "Ha llego al limite de Intentos de Cantidad/Lote", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "No hay Internet, intentarlo más tarde o verifica su conexión",Toast.LENGTH_SHORT).show();
+                                            listanombres.setVisibility(View.INVISIBLE);
                                         }
                                     }
                                 });
@@ -422,10 +408,13 @@ public class Envasador_Miguel extends Fragment {
                                 Toast.makeText(getActivity(), "No hay Internet, intentarlo más tarde o verifica su conexión",Toast.LENGTH_SHORT).show();
                                 listanombres.setVisibility(View.INVISIBLE);
                             }
-                            break;
-                    }
-                    // false : close the menu; true : not close the menu
-                    return false;
+                        }
+                    });
+                    mibuild1.setPositiveButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
+                    });
+                    mibuild1.setView(mviewd).create().show();
                 }
             });
         }catch (Exception e1){
