@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Envasadores</string>
+    <string name="tab_nombre1">Eduardo</string>
+    <string name="tab_nombre2">Cesar</string>
+    <string name="tab_nombre3">Jose Luis</string>
+    <string name="tab_nombre4">Leonardo</string>
+    <string name="tab_nombre5">Miguel</string>
+    <string name="tab_nombre6">Silver</string>
+    <string name="tab_nombre7">Francisco</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
