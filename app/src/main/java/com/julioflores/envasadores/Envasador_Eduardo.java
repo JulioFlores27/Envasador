@@ -19,9 +19,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -151,8 +148,8 @@ public class Envasador_Eduardo extends Fragment {
                             ConnectivityManager conectividad = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                             NetworkInfo lanet = conectividad.getActiveNetworkInfo();
                             if(lanet != null && lanet.isConnected()){
-                                String cant = String.valueOf(esteenvase.getCantidades());
-                                String cant2 = String.valueOf(esteenvase.getCantidades2());
+                                final String cant = String.valueOf(esteenvase.getCantidades());
+                                final String cant2 = String.valueOf(esteenvase.getCantidades2());
                                 String cant3 = String.valueOf(esteenvase.getCantidades3());
                                 String lots = String.valueOf(esteenvase.getLote());
                                 String lots2 = String.valueOf(esteenvase.getLote2());
@@ -161,7 +158,7 @@ public class Envasador_Eduardo extends Fragment {
                                 final int l11 = Integer.parseInt(lots);
                                 final int c22 = Integer.parseInt(cant2);
                                 final int l22 = Integer.parseInt(lots2);
-                                int c33 = Integer.parseInt(cant3);
+                                final int c33 = Integer.parseInt(cant3);
                                 int l33 = Integer.parseInt(lots3);
                                 if(c11 == 0 || l11 == 0) {
                                     View mview1 = getLayoutInflater().inflate(R.layout.terminado_dialogo, null);
@@ -184,18 +181,35 @@ public class Envasador_Eduardo extends Fragment {
                                                 int cant1 = Integer.parseInt(lt1);
                                                 int lote1 = Integer.parseInt(rlots);
                                                 if(cant1 != 0 && lote1 != 0){
-                                                    String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
-                                                            "&Etapa1=Terminado&Cantidad=" + lt1 +
-                                                            "&DetalleProblema=" + vacio.replaceAll("", "%20") +
-                                                            "&Lote=" + rlots + "&Cantidad2=0&Lote2=0&Cantidad3=0&Lote3=0" +
-                                                            "&ID=" + ids;
-                                                    Toast.makeText(getActivity(), "Terminado", Toast.LENGTH_SHORT).show();
-                                                    cliente.post(url, new AsyncHttpResponseHandler() {
-                                                        @Override
-                                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
-                                                        @Override
-                                                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
-                                                    });
+                                                    if(c11 == cant1){
+                                                        String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
+                                                                "&Etapa1=Terminado&Cantidad=" + lt1 +
+                                                                "&DetalleProblema=" + vacio.replaceAll("", "%20") +
+                                                                "&Lote=" + rlots + "&Cantidad2=0&Lote2=0&Cantidad3=0&Lote3=0" +
+                                                                "&ID=" + ids;
+                                                        Toast.makeText(getActivity(), "Terminado", Toast.LENGTH_SHORT).show();
+                                                        cliente.post(url, new AsyncHttpResponseHandler() {
+                                                            @Override
+                                                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                                            @Override
+                                                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                                        });
+                                                    }else if(cant1 < c11){
+                                                        Toast.makeText(getActivity(), "Ingrese una Cantidad menor", Toast.LENGTH_SHORT).show();
+                                                    }else{
+                                                        String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
+                                                                "&Etapa1=Pendiente&Cantidad=" + lt1 +
+                                                                "&DetalleProblema=" + vacio.replaceAll("", "%20") +
+                                                                "&Lote=" + rlots + "&Cantidad2=0&Lote2=0&Cantidad3=0&Lote3=0" +
+                                                                "&ID=" + ids;
+                                                        Toast.makeText(getActivity(), "Pendiente", Toast.LENGTH_SHORT).show();
+                                                        cliente.post(url, new AsyncHttpResponseHandler() {
+                                                            @Override
+                                                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                                            @Override
+                                                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                                        });
+                                                    }
                                                 }else{
                                                     Toast.makeText(getActivity(), "No se guardo, ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
                                                 }
@@ -242,19 +256,37 @@ public class Envasador_Eduardo extends Fragment {
                                                 int cant1 = Integer.parseInt(lt2);
                                                 int lote1 = Integer.parseInt(rlots2);
                                                 if(cant1 != 0 && lote1 != 0){
-                                                    String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
-                                                            "&Etapa1=Terminado&Cantidad="+ c11 +
-                                                            "&DetalleProblema=" + vacio.replaceAll("","%20") +
-                                                            "&Lote=" + l11 + "&Cantidad2="+ lt2 + "&Lote2="+ rlots2 +
-                                                            "&Cantidad3=0&Lote3=0"+
-                                                            "&ID=" + ids;
-                                                    Toast.makeText(getActivity(), "Terminado", Toast.LENGTH_SHORT).show();
-                                                    cliente.post(url, new AsyncHttpResponseHandler() {
-                                                        @Override
-                                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
-                                                        @Override
-                                                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
-                                                    });
+                                                    if(c11 == cant1){
+                                                        String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
+                                                                "&Etapa1=Terminado&Cantidad="+ c11 +
+                                                                "&DetalleProblema=" + vacio.replaceAll("","%20") +
+                                                                "&Lote=" + l11 + "&Cantidad2="+ lt2 + "&Lote2="+ rlots2 +
+                                                                "&Cantidad3=0&Lote3=0"+
+                                                                "&ID=" + ids;
+                                                        Toast.makeText(getActivity(), "Terminado", Toast.LENGTH_SHORT).show();
+                                                        cliente.post(url, new AsyncHttpResponseHandler() {
+                                                            @Override
+                                                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                                            @Override
+                                                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                                        });
+                                                    }else if(c11 < cant1){
+                                                        Toast.makeText(getActivity(), "Ingrese una Cantidad menor", Toast.LENGTH_SHORT).show();
+                                                    }else{
+                                                        String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
+                                                                "&Etapa1=Pendiente&Cantidad="+ c11 +
+                                                                "&DetalleProblema=" + vacio.replaceAll("","%20") +
+                                                                "&Lote=" + l11 + "&Cantidad2="+ lt2 + "&Lote2="+ rlots2 +
+                                                                "&Cantidad3=0&Lote3=0"+
+                                                                "&ID=" + ids;
+                                                        Toast.makeText(getActivity(), "Pendiente", Toast.LENGTH_SHORT).show();
+                                                        cliente.post(url, new AsyncHttpResponseHandler() {
+                                                            @Override
+                                                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                                            @Override
+                                                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                                        });
+                                                    }
                                                 }else{
                                                     Toast.makeText(getActivity(), "No se guardo, ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
                                                 }
@@ -277,7 +309,9 @@ public class Envasador_Eduardo extends Fragment {
                                     View mview1 = getLayoutInflater().inflate(R.layout.terminado_dialogo, null);
                                     mibuild1.setTitle("Terminado");
                                     final EditText t1 = (EditText) mview1.findViewById(R.id.cantis);
-                                    t1.setText(cant2);
+                                    final int ccccc = c11 - c22;
+                                    String c1c2c3 = String.valueOf(ccccc);
+                                    t1.setText(c1c2c3);
                                     final EditText t2 = (EditText) mview1.findViewById(R.id.lotes);
                                     t2.setText(lots2);
                                     mibuild1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
@@ -286,25 +320,43 @@ public class Envasador_Eduardo extends Fragment {
                                             ConnectivityManager conectividad1 = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                                             NetworkInfo lanet1 = conectividad1.getActiveNetworkInfo();
                                             if(lanet1 != null && lanet1.isConnected()){
-                                                String vacio = "";
                                                 String lt3 = t1.getText().toString();
                                                 t1.setText(lt3);
                                                 String rlots3 = t2.getText().toString();
                                                 t2.setText(rlots3);
-                                                int cant1 = Integer.parseInt(lt3);
+                                                int cant3 = Integer.parseInt(lt3);
                                                 int lote1 = Integer.parseInt(rlots3);
-                                                if(cant1 != 0 && lote1 != 0){
-                                                    String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
-                                                            "&Etapa1=Terminado&Cantidad="+ c11 + "&DetalleProblema=" + vacio.replaceAll("","%20") +
-                                                            "&Lote=" + l11 + "&Cantidad2="+ c22 + "&Lote2="+ l22 + "&Cantidad3="+ lt3 +"&Lote3="+ rlots3 +
-                                                            "&ID=" + ids;
-                                                    Toast.makeText(getActivity(), "Terminado", Toast.LENGTH_SHORT).show();
-                                                    cliente.post(url, new AsyncHttpResponseHandler() {
-                                                        @Override
-                                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
-                                                        @Override
-                                                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
-                                                    });
+                                                if(cant3 != 0 && lote1 != 0){
+                                                    if(ccccc == cant3) {
+                                                        String vaci = "";
+                                                        String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
+                                                                "&Etapa1=Terminado&Cantidad="+ c11 + "&DetalleProblema=" + vaci.replaceAll("","%20") +
+                                                                "&Lote=" + l11 + "&Cantidad2="+ c22 + "&Lote2="+ l22 + "&Cantidad3="+ lt3 +"&Lote3="+ rlots3 +
+                                                                "&ID=" + ids;
+                                                        Toast.makeText(getActivity(), "Terminado", Toast.LENGTH_SHORT).show();
+                                                        cliente.post(url, new AsyncHttpResponseHandler() {
+                                                            @Override
+                                                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                                            @Override
+                                                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                                        });
+                                                    }else if(cant3 < ccccc) {
+                                                        String vacio = "No coincidio sobre el valor de cantidad";
+                                                        String url = "https://appsionmovil.000webhostapp.com/asignar_pedidoenvasar.php?FechaAprobacion=" + dias.replaceAll(" ", "%20") +
+                                                                "&Etapa1=Problema&Cantidad="+ c11 + "&DetalleProblema=" + vacio.replaceAll(" ","%20") +
+                                                                "&Lote=" + l11 + "&Cantidad2="+ c22 + "&Lote2="+ l22 + "&Cantidad3="+ lt3 +"&Lote3="+ rlots3 +
+                                                                "&ID=" + ids;
+                                                        Toast.makeText(getActivity(), "Enviado", Toast.LENGTH_SHORT).show();
+                                                        cliente.post(url, new AsyncHttpResponseHandler() {
+                                                            @Override
+                                                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                                            @Override
+                                                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                                        });
+                                                    }
+                                                    else{
+                                                        Toast.makeText(getActivity(),"Ingrese menor cantidad", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }else{
                                                     Toast.makeText(getActivity(), "No se guardo, ingrese un valor mayor que 0",Toast.LENGTH_SHORT).show();
                                                 }

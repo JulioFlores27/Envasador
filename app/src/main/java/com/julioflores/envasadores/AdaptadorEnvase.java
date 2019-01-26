@@ -2,6 +2,7 @@ package com.julioflores.envasadores;
 
 import android.app.Activity;
 import android.content.Context;
+import android.opengl.Visibility;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,16 @@ public class AdaptadorEnvase extends ArrayAdapter<Envases> {
         TextView t9 = (TextView) listItemView.findViewById(R.id.Fechaen_envase);
         t8.setText(envases.getFechaasignadas());
         t9.setText(envases.getFechaenvases());
+        int ca2 = envases.getCantidades2();
+        int ca3 = envases.getCantidades3();
+
+        if(ca2 != 0){
+            TextView tc = (TextView) listItemView.findViewById(R.id.Cantidad_envase2);
+            TextView tg1 = (TextView) listItemView.findViewById(R.id.guion1);
+            tc.setVisibility(View.VISIBLE);
+            tg1.setVisibility(View.VISIBLE);
+            tc.setText(String.valueOf(envases.getCantidades2()+envases.getCantidades3()));
+        }
         return listItemView;
     }
 }
